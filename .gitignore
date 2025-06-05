@@ -1,0 +1,10 @@
+# Python bytecode and cache
+__pycache__/
+*.pyc
+
+# Config or secrets
+config.json
+.env
+
+# SQLite database (optional)
+*.db
