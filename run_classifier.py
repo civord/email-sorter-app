@@ -1,0 +1,3 @@
+import database
+
+database.update_email_category_and_priority()

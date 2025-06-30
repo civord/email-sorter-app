@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: "Montserrat", sans-serif;
+}
+
+.nav-bar{
+    padding: 1rem;
+}
+
+.nav-bar ul{
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-bar ul div{
+    display: flex;
+    gap: 1em;
+}
+
+/* Category Section */
+.category-section{
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    align-items: center;
+}
+
+.category-items{
+    border: 1px solid black;
+    padding: 1rem;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Emails Section */
+.email-item{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.email-content{
+    width: 100%;
+}
+
+.sender-name-div{
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.sender-name{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.date{
+    font-weight: 600;
+    font-size: 12px
+}
+
+.subject-line{
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.priority-tag-div{
+    width: 60px;
+}
+
+.priority-tag {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 12px;
+  width: inherit;
+  text-align: center;
+}

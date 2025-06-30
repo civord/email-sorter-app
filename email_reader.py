@@ -18,7 +18,7 @@ mail.login(target_email, app_password)
 mail.select(mailbox="INBOX")
 
 # Search for unread emails
-status, messages = mail.search(None, "(UNSEEN SINCE 10-May-2025)")
+status, messages = mail.search(None, "(UNSEEN SINCE 10-Jun-2025)")
 
 email_ids = [eid for eid in messages[0].decode().split(" ") if eid]
 
@@ -42,6 +42,7 @@ for email_id in email_ids:
 
     if not database.check_for_duplicates(messageID):
         database.insert_email(messageID, subject, sender, email_date, body)
+    
     # Print email info
     print("="*50)
     print(f"From: {sender}")
