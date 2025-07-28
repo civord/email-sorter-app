@@ -1,0 +1,39 @@
+{
+  "categories": {
+    "Work": {
+      "senders": ["hr@", "boss@", "team@", "manager@", "office@"],
+      "subject_keywords": ["project", "meeting", "deadline", "submission", "presentation", "report", "task"],
+      "body_keywords": ["status report", "submit", "complete", "follow up", "due"]
+    },
+    "Newsletters": {
+      "senders": ["newsletter", "noreply@", "digest@", "updates@", "no-reply@", "news@", "gaming@", "support@"],
+      "subject_keywords": ["edition", "newsletter", "digest", "subscribe", "weekly", "monthly"],
+      "body_keywords": ["unsubscribe", "read more", "latest", "trending", "highlights"]
+    },
+    "Finance": {
+      "senders": ["bank@", "billing@", "payments@", "paypal@", "invoice@"],
+      "subject_keywords": ["invoice", "payment", "transaction", "receipt", "billing"],
+      "body_keywords": ["amount due", "account balance", "charged", "refund", "credit"]
+    },
+    "Shopping": {
+      "senders": ["amazon", "ebay", "store@", "shop@", "order@", "sale@"],
+      "subject_keywords": ["order confirmation", "shipped", "delivered", "deal", "discount", "promo"],
+      "body_keywords": ["thank you for your order", "track your order", "limited time offer", "coupon"]
+    },
+    "Education": {
+      "senders": ["university", "school", "college", "course@", "learn@", "edx@"],
+      "subject_keywords": ["class", "course", "lecture", "exam", "assignment", "grade"],
+      "body_keywords": ["study material", "syllabus", "exam schedule", "learning platform"]
+    },
+    "Social": {
+      "senders": ["facebook", "twitter", "instagram", "linkedin"],
+      "subject_keywords": ["friend request", "like", "comment", "follow", "message"],
+      "body_keywords": ["mentioned you", "shared your post", "new follower"]
+    }
+  },
+  "labels": {
+    "urgent": ["asap", "immediately", "urgent", "action required", "response needed", "security"],
+    "low_priority": ["fyi", "not urgent", "optional", "just checking in"],
+    "follow_up": ["follow up", "reminder", "checking back", "pinging", "resend"]
+  }
+}
