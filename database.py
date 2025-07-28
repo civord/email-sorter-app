@@ -102,5 +102,5 @@ def update_email_category_and_priority():
 def get_raw_email_table():
     conn = get_connection()
     cursor = conn.cursor()
-    raw_emails = cursor.execute("SELECT id, sender, subject, category, priority, date FROM emails").fetchall()
+    raw_emails = cursor.execute("SELECT id, sender, subject, category, priority FROM emails").fetchall()
     return raw_emails
