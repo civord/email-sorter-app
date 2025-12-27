@@ -18,7 +18,7 @@ mail.login(target_email, app_password)
 mail.select(mailbox="INBOX")
 
 # Search for unread emails
-status, messages = mail.search(None, "(UNSEEN SINCE 10-Jun-2025)")
+status, messages = mail.search(None, "(UNSEEN SINCE 10-Apr-2025)")
 
 email_ids = [eid for eid in messages[0].decode().split(" ") if eid]
 
@@ -29,6 +29,7 @@ for email_id in email_ids:
     raw_email_data = data[0][1]
     # Convert it
     clean_email = BytesParser(policy=policy.default).parsebytes(raw_email_data)
+    print(clean_email)
     # Store the content that we need
     messageID = clean_email["Message-ID"]
     subject = clean_email["Subject"]

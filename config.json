@@ -1,39 +1,152 @@
 {
-  "categories": {
-    "Work": {
-      "senders": ["hr@", "boss@", "team@", "manager@", "office@"],
-      "subject_keywords": ["project", "meeting", "deadline", "submission", "presentation", "report", "task"],
-      "body_keywords": ["status report", "submit", "complete", "follow up", "due"]
-    },
-    "Newsletters": {
-      "senders": ["newsletter", "noreply@", "digest@", "updates@", "no-reply@", "news@", "gaming@", "support@"],
-      "subject_keywords": ["edition", "newsletter", "digest", "subscribe", "weekly", "monthly"],
-      "body_keywords": ["unsubscribe", "read more", "latest", "trending", "highlights"]
-    },
-    "Finance": {
-      "senders": ["bank@", "billing@", "payments@", "paypal@", "invoice@"],
-      "subject_keywords": ["invoice", "payment", "transaction", "receipt", "billing"],
-      "body_keywords": ["amount due", "account balance", "charged", "refund", "credit"]
-    },
-    "Shopping": {
-      "senders": ["amazon", "ebay", "store@", "shop@", "order@", "sale@"],
-      "subject_keywords": ["order confirmation", "shipped", "delivered", "deal", "discount", "promo"],
-      "body_keywords": ["thank you for your order", "track your order", "limited time offer", "coupon"]
-    },
-    "Education": {
-      "senders": ["university", "school", "college", "course@", "learn@", "edx@"],
-      "subject_keywords": ["class", "course", "lecture", "exam", "assignment", "grade"],
-      "body_keywords": ["study material", "syllabus", "exam schedule", "learning platform"]
-    },
-    "Social": {
-      "senders": ["facebook", "twitter", "instagram", "linkedin"],
-      "subject_keywords": ["friend request", "like", "comment", "follow", "message"],
-      "body_keywords": ["mentioned you", "shared your post", "new follower"]
-    }
+  "thresholds": {
+    "category_assign": 4.0
   },
-  "labels": {
-    "urgent": ["asap", "immediately", "urgent", "action required", "response needed", "security"],
-    "low_priority": ["fyi", "not urgent", "optional", "just checking in"],
-    "follow_up": ["follow up", "reminder", "checking back", "pinging", "resend"]
+
+  "categories": {
+
+    "marketing": {
+      "sender_patterns": [
+        "@spotify.com",
+        "@tiktok.com",
+        "@reddit.com",
+        "@meta.com",
+        "@facebookmail.com",
+        "@instagram.com",
+        "@youtube.com",
+        "@booking.com",
+        "@aliexpress.com",
+        "@samsung.com",
+        "@huawei.com",
+        "@sales.", 
+        "@promo.",
+        "@newsletter.",
+        "@email.", 
+        "@mail."
+      ],
+
+      "keywords": [
+        "sale", "discount", "promo", "promotion", "newsletter", "offer",
+        "upgrade", "special", "deal", "limited", "save", "voucher",
+        "exclusive", "new collection", "new arrivals"
+      ],
+
+      "body_indicators": [
+        "unsubscribe",
+        "manage preferences",
+        "view this email in your browser"
+      ],
+
+      "weights": { "sender": 3, "subject": 2, "body": 1 }
+    },
+
+    "finance": {
+      "sender_patterns": [
+        "@bank",
+        "@finance",
+        "@billing",
+        "@paypal.com",
+        "@stripe.com",
+        "@revolut.com"
+      ],
+
+      "keywords": [
+        "invoice", "billing", "payment", "balance",
+        "receipt", "statement", "transaction",
+        "credit", "debit", "loan", "refund"
+      ],
+
+      "body_indicators": [
+        "your payment",
+        "your invoice",
+        "billing details"
+      ],
+
+      "weights": { "sender": 4, "subject": 3, "body": 2 }
+    },
+
+    "work": {
+      "sender_patterns": [
+        "@company", 
+        "@team", 
+        "@support", 
+        "@helpdesk",
+        "@organization"
+      ],
+
+      "keywords": [
+        "meeting", "task", "schedule", "project", "deadline",
+        "review", "assignment", "report"
+      ],
+
+      "body_indicators": [
+        "attached file",
+        "please review",
+        "see attachment"
+      ],
+
+      "weights": { "sender": 3, "subject": 2, "body": 2 }
+    },
+
+    "school": {
+      "sender_patterns": [
+        "@edu", 
+        "@school", 
+        "@university",
+        "@faculty"
+      ],
+
+      "keywords": [
+        "exam", "schedule", "lecture", "class",
+        "assignment", "homework", "results"
+      ],
+
+      "body_indicators": [
+        "your instructor",
+        "your professor"
+      ],
+
+      "weights": { "sender": 3, "subject": 2, "body": 1 }
+    },
+
+    "support": {
+      "sender_patterns": [
+        "@help",
+        "@support",
+        "no-reply@",
+        "noreply@"
+      ],
+
+      "keywords": [
+        "ticket", "support", "issue", "request"
+      ],
+
+      "body_indicators": [
+        "your request",
+        "support team",
+        "we received your message"
+      ],
+
+      "weights": { "sender": 4, "subject": 2, "body": 1 }
+    },
+
+    "spam": {
+      "sender_patterns": [
+        "@xyz", "@random", "@unknown"
+      ],
+
+      "keywords": [
+        "win", "free", "prize", "claim", "urgent",
+        "bitcoin", "crypto", "investment"
+      ],
+
+      "body_indicators": [
+        "click here",
+        "act now"
+      ],
+
+      "weights": { "sender": 2, "subject": 3, "body": 3 }
+    }
+
   }
 }

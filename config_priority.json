@@ -1,0 +1,118 @@
+{
+  "thresholds": {
+    "priority_assign": 3.0
+  },
+  "priorities": {
+    "high": {
+      "weights": {
+        "sender": 3,
+        "subject": 2,
+        "body": 1
+      },
+      "sender_patterns": [
+        "@bank",
+        "@gov",
+        "@government",
+        "@tax",
+        "@court",
+        "@school",
+        "@university",
+        "@support",
+        "noreply-security",
+        "no-reply-security",
+        "account",
+        "billing"
+      ],
+      "subject_keywords": [
+        "urgent",
+        "action required",
+        "verify",
+        "suspicious",
+        "security alert",
+        "failed",
+        "problem",
+        "payment due",
+        "invoice",
+        "deadline",
+        "respond",
+        "blocked",
+        "disabled"
+      ],
+      "body_indicators": [
+        "immediate action",
+        "needs attention",
+        "verification required",
+        "deadline approaching",
+        "payment overdue"
+      ]
+    },
+
+    "normal": {
+      "weights": {
+        "sender": 2,
+        "subject": 1,
+        "body": 1
+      },
+      "sender_patterns": [
+        "@github",
+        "@google",
+        "@discord",
+        "@microsoft",
+        "@apple",
+        "@amazon",
+        "@spotify",
+        "@youtube",
+        "@facebook",
+        "@instagram",
+        "@linkedin"
+      ],
+      "subject_keywords": [
+        "update",
+        "notification",
+        "reminder",
+        "reply",
+        "follow up",
+        "details"
+      ],
+      "body_indicators": [
+        "see more",
+        "click here",
+        "additional info"
+      ]
+    },
+
+    "low": {
+      "weights": {
+        "sender": 1,
+        "subject": 1,
+        "body": 1
+      },
+      "sender_patterns": [
+        "@newsletter",
+        "@mailing",
+        "@promo",
+        "@offers",
+        "@marketing",
+        "@mailer",
+        "@campaign"
+      ],
+      "subject_keywords": [
+        "new products",
+        "offer",
+        "discount",
+        "sale",
+        "deal",
+        "newsletter",
+        "digest",
+        "weekly update",
+        "recap"
+      ],
+      "body_indicators": [
+        "shop now",
+        "view deal",
+        "unsubscribe",
+        "special offer"
+      ]
+    }
+  }
+}

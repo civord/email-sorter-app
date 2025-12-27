@@ -1,72 +1,100 @@
-let mobileMenuIcon = document.getElementById("mobile-menu-icon");
-let mobileMenuDiv = document.querySelector(".sidebar-menu");
-let closeMenuBtn = document.querySelector(".close-menu-btn");
-let categoryItems = document.querySelectorAll(".category-items");
-let sidebar = document.querySelector(".sidebar-menu");
-let toggleBtn = document.getElementById("toggle-btn");
-let categoryContainer = document.querySelector(".category-section");
-let leftNavBtn = document.getElementById("left-nav-btn");
-let rightNavBtn = document.getElementById("right-nav-btn");
-const scrollAmount = categoryItems[0].offsetWidth + 20;
+const fullEmailSection = document.querySelector(".full-email-section");
+const emailList = document.querySelector(".email-list");
+let activeEmailId = null;
+let previouslyClickedEmail = null;
 
-leftNavBtn.addEventListener("click", () => {
-    categoryContainer.scrollBy({left: -2 * scrollAmount, behavior: "smooth"});
-});
-
-rightNavBtn.addEventListener("click", () => {
-    categoryContainer.scrollBy({left: 2 * scrollAmount, behavior: "smooth"});
-});
-
-function toggleSubmenu(button){
-
-    if(!button.nextElementSibling.classList.contains("show")){
-        closeAllSubmenus();
+Array.from(emailList.children).forEach(email => {
+    if (email.dataset.emailStatus === "READ")
+    {
+        email.classList.add("read");
     }
+})
 
-    button.nextElementSibling.classList.toggle("show");
-    button.classList.toggle("rotate");
+emailList.addEventListener("click", async (e) => {
+    const emailEl = e.target.closest(".email-item");
+    if (!emailEl) return;
+    
+    const emailId = emailEl.dataset.emailId;
+    let emailStatus = emailEl.dataset.emailStatus;
 
-    if(sidebar.classList.contains("hide")){
-        sidebar.classList.toggle("hide");
-        toggleBtn.classList.toggle("rotate");
-    }
+    try{
+        await loadEmailPreview(emailId);
 
-}
-
-function toggleSidebar(){
-    sidebar.classList.toggle("hide");
-    toggleBtn.classList.toggle("rotate");
-
-    closeAllSubmenus();
-}
-
-function closeAllSubmenus(){
-    Array.from(sidebar.getElementsByClassName("show")).forEach(menu => {
-        menu.classList.remove("show");
-        menu.previousElementSibling.classList.remove("rotate");
-    })
-}
-
-categoryItems.forEach(item => {
-    const shadow = item.querySelector(".scrollable-shadow-box");
-    const updateShadow = () => {
-        const isAtBottom = item.scrollTop + item.clientHeight >= item.scrollHeight;
-        const isAtTop  = item.scrollTop === 0;
-        
-        if (isAtTop && !isAtBottom){
-            shadow.style.opacity = "1";
+        if (emailStatus === "UNREAD"){
+            markEmailAsRead(emailEl, emailId);
         }
-        else{
-            shadow.style.opacity = "0";
-        } 
+        
+        selectEmail(emailEl);
+    }catch (err)
+    {
+        console.error("Failed to load email", err);
     }
-
-    if (item.scrollHeight > item.clientHeight) {
-        shadow.style.opacity = '1';
-    }
-
-
-    item.addEventListener("scroll", updateShadow);
-    window.addEventListener("resize", updateShadow);
-
+    
+    fullEmailSection.style.visibility = "visible";
+    previouslyClickedEmail = emailEl;
+    loadEmailPreview(emailId)
 });
+
+function markEmailAsRead(emailEl, emailId){
+    emailEl.dataset.emailStatus = "READ";
+    emailEl.classList.add("read");
+    emailEl.classList.add("was-unread-when-selected");
+    changeEmailStatus(emailId, "READ");
+}
+
+function selectEmail(emailEl)
+{
+    if (previouslyClickedEmail)
+    {
+        previouslyClickedEmail.classList.remove("selected");
+        previouslyClickedEmail.classList.remove("was-unread-when-selected");
+    }
+    emailEl.classList.add("selected");
+    previouslyClickedEmail = emailEl;
+}
+
+async function loadEmailPreview(emailId){
+    activeEmailId = emailId;
+
+    const res = await fetch(`/email/${emailId}`)
+    if (!res.ok) throw new Error("Fetch failed!");
+
+    const data = await res.json()
+    
+    if (emailId !== activeEmailId) return;
+
+    document.querySelector("#preview-sender").textContent = data.sender;
+    document.querySelector("#preview-date").textContent = data.date;
+    document.querySelector("#preview-body").textContent = data.body;
+    document.querySelector("#preview-subject").textContent = data.subject;
+}
+
+async function changeEmailStatus(id, emailStatus) {
+    const data = {
+        email_id : id,
+        email_status: emailStatus
+    };
+    fetch('/api/submit-data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok){
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+    // Handle the data from the backend
+    console.log('Success:', data);
+    console.log('Data sent successfully!');
+    })
+    .catch((error) => {
+        // Handle errors during the fetch operation
+        console.error('Error:', error);
+        alert('Failed to send data.');
+    });
+}

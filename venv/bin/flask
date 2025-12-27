@@ -1,4 +1,4 @@
-#!/home/bozin/email-sorter-app/venv/bin/python3
+#!/home/civord/email-sorter-app/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

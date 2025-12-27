@@ -1,6 +1,9 @@
 import sqlite3
 import classifier
 import json
+import re
+from bs4 import BeautifulSoup
+
 
 ## Creates a connection to the database
 def get_connection():
@@ -19,7 +22,12 @@ def create_table():
                     date TEXT,
                     body TEXT,
                    category TEXT,
-                   priority TEXT
+                   priority TEXT,
+                   category_score REAL,
+                   category_matches TEXT,
+                   priority_score REAL,
+                   priority_matches TEXT,
+                   status TEXT DEFAULT "UNREAD"
                    )''')
     conn.commit()
     conn.close()
@@ -44,53 +52,56 @@ def check_for_duplicates(messageID):
 def get_data_from_table():
     conn = get_connection()
     cursor = conn.cursor()
-    data = cursor.execute("SELECT id, sender, subject, body, category, priority FROM emails").fetchall() 
+    rows = cursor.execute("SELECT id, sender, subject, body, category, priority FROM emails").fetchall()
     conn.close()
 
     all_emails = []
 
-    for email_id, sender, subject, body, category, priority in data:
-        sender_words = sender.lower().split() if sender else []
-        subject_words = subject.lower().split() if subject else []
+    for email_id, sender, subject, body, category, priority in rows:
 
-        # Clean up the body text by removing extra spaces and newlines
-        body = body.replace("\n", " ").strip() if body else ""
-        body_words = body.lower().split() if body else []
-        # Create a dictionary for the email information     
+        # Normalize everything consistently
+        sender_clean = (sender or "").strip().lower()
+        subject_clean = (subject or "").strip().lower()
+
+        # Better body cleanup
+        body_clean = (body or "")
+        body_clean = body_clean.replace("\n", " ")
+        body_clean = re.sub(r"\s+", " ", body_clean).strip().lower()
+
         email_info = {
             "id": email_id,
-            "sender": sender_words,
-            "subject": subject_words,
-            "body": body_words,
+            "sender": sender_clean,
+            "subject": subject_clean,
+            "body": body_clean,
             "current_category": category,
             "current_priority": priority
         }
+
         all_emails.append(email_info)
 
     return all_emails
 
-
-def update_email_category_and_priority():
+def update_email_category_and_priority(classified_emails):
     # Load classification config
     with open("config.json", "r") as file:
         config = json.load(file)
 
     conn = get_connection()
     cursor = conn.cursor()
-    all_emails = get_data_from_table()
-
-    # Pass config to classifier
-    classified_emails = classifier.classify_email(all_emails, config)
 
     for email in classified_emails:
         new_category = email.get("category", None)
+        cat_score = email.get("category_score", 0)
+        cat_matches = email.get("category_matches", None)
+        new_priority = email.get("priority", None)
+        prio_score = email.get("priority_score", 0)
+        prio_matches = email.get("priority_matches", None)
         if new_category != email.get("current_category"):
-            cursor.execute('''UPDATE emails SET category=? WHERE id=?''', (new_category, email["id"]))
+            cursor.execute('''UPDATE emails SET category=?, category_score=?, category_matches=?  WHERE id=?''', (new_category, cat_score, json.dumps(cat_matches), email["id"]))
             print(f"Updated category for email ID {email['id']} to {new_category}")
-        new_priority = ", ".join(email.get("labels", [])) if "labels" in email else None
         if new_priority:
             if new_priority != email.get("current_priority"):
-                cursor.execute('''UPDATE emails SET priority=? WHERE id=?''', (new_priority, email["id"]))  
+                cursor.execute('''UPDATE emails SET priority=?, priority_score=?, priority_matches=? WHERE id=?''', (new_priority, prio_score, json.dumps(prio_matches), email["id"]))  
                 print(f"Updated priority for email ID {email['id']} to {new_priority}")      
         else:
             cursor.execute('''UPDATE emails SET priority=NULL WHERE id=?''', (email["id"],))
@@ -102,5 +113,27 @@ def update_email_category_and_priority():
 def get_raw_email_table():
     conn = get_connection()
     cursor = conn.cursor()
-    raw_emails = cursor.execute("SELECT id, sender, subject, category, priority FROM emails").fetchall()
+    raw_emails = cursor.execute("SELECT id, sender, subject, category, priority, status FROM emails").fetchall()
+    conn.close()
     return raw_emails
+
+def get_email(email_id):
+    conn = get_connection()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("""
+             SELECT sender, subject, body, date
+             FROM emails
+             WHERE id=?
+              """, (email_id,))
+    row = cursor.fetchone()
+    conn.close()
+
+    return row
+
+def update_email_status(id, email_status):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE emails SET status=? WHERE id=?", (email_status, id))
+    conn.commit()
+    conn.close()
