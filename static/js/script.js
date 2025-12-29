@@ -1,14 +1,114 @@
 const fullEmailSection = document.querySelector(".full-email-section");
 const emailList = document.querySelector(".email-list");
+
+const filterBtn = document.getElementById("filter-btn");
+const applyFiltersBtn = document.getElementById("apply-filters");
+const filterModal = document.getElementById("filter-modal");
+let currentFilters = {
+    category: "",
+    priority: ""
+};
+
 let activeEmailId = null;
 let previouslyClickedEmail = null;
+let offset = 0;
+const limit = 20;
+let isLoading = false;
+let hasMore = true;
 
-Array.from(emailList.children).forEach(email => {
-    if (email.dataset.emailStatus === "READ")
-    {
-        email.classList.add("read");
+loadEmails();
+
+async function loadEmails()
+{
+    if (isLoading || !hasMore) return;
+
+    isLoading = true;
+
+    const params = new URLSearchParams({
+        offset,
+        limit, 
+        category: currentFilters.category,
+        priority: currentFilters.priority
+    })
+
+    const res = await fetch(`/emails?${params.toString()}`);
+    const emails = await res.json();
+
+    if (emails.length === 0){
+        hasMore = false;
+        isLoading = false;
+        return;
     }
-})
+
+    emails.forEach(email => renderEmails(email));
+    offset += limit;
+    isLoading = false;
+}
+
+function renderEmails(email)
+{
+    const emailItem = document.createElement("div");
+    emailItem.classList.add("email-item");
+    emailItem.dataset.emailId = email[0];
+    emailItem.dataset.emailStatus = email[5]
+
+    if (email[5] === "READ") {
+        emailItem.classList.add("read");
+    }
+
+    if (email[3] === null)
+    {
+        email[3] = "None";
+    }
+
+    priority_colours = {
+        "low" : "#397025ff",
+        "normal" : "#b39a2cff",
+        "high" : "#C41E3A"
+    };
+
+    const date = new Date(email[6]);
+    const options = {weekday: "short"};
+    const day = date.toLocaleString('en-US', options);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    const formattedDate = `${day} ${hours}:${minutes}`
+
+    emailItem.innerHTML = `
+            <div class="profile-pic">
+                <img id="profile-pic" src="/imgs/unknown.png" alt="">
+            </div>
+            <div class="email-content">
+                <div class="sender-div">
+                    <h3>${email[1]}</h3>
+                    <p>${email[3]}</p>
+                </div>
+                <div class="subject-div">
+                    <h4>${email[2]}</h4>
+                    <p>${formattedDate}</p>
+                </div>
+                <div class="body-div">
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                    <div class="priority-tag" style="color: ${priority_colours[email[4]]}">${email[4]}</div>
+                </div>
+            </div>
+    `
+    emailList.appendChild(emailItem);
+}
+
+const observer = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting)
+    {
+        loadEmails()
+    }
+}, {
+    root: null,
+    threshold: 0.1
+});
+
+observer.observe(document.getElementById("scroll-sentinel"));
+
 
 emailList.addEventListener("click", async (e) => {
     const emailEl = e.target.closest(".email-item");
@@ -98,3 +198,25 @@ async function changeEmailStatus(id, emailStatus) {
         alert('Failed to send data.');
     });
 }
+
+filterBtn.addEventListener("click", (e) => {
+    filterModal.classList.toggle("hidden");
+})
+
+filterModal.addEventListener("click", (e) => {
+    if (e.target === filterModal){
+        filterModal.classList.add("hidden");
+    }
+})
+
+applyFiltersBtn.addEventListener("click", (e) => {
+    currentFilters.category = document.getElementById("filter-category").value.toLowerCase();
+    currentFilters.priority = document.getElementById("filter-priority").value.toLowerCase();
+
+    offset = 0;
+    hasMore = true;
+    emailList.innerHTML = "";
+
+    filterModal.classList.add("hidden");
+    loadEmails()
+})

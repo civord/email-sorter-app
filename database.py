@@ -29,8 +29,40 @@ def create_table():
                    priority_matches TEXT,
                    status TEXT DEFAULT "UNREAD"
                    )''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS meta (
+        key TEXT PRIMARY KEY,
+        value TEXT
+        );
+''');
     conn.commit()
     conn.close()
+
+def get_last_uid():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    row = cursor.execute("SELECT value FROM meta WHERE key = 'last_uid'").fetchone()
+    conn.close()
+
+    if row is None:
+        return 0
+    
+    return int(row[0])
+
+def set_last_uid(uid):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('''
+                INSERT INTO meta (key, value)
+                VALUES ('last_uid', ?)
+                ON CONFLICT(key)
+                DO UPDATE SET value=excluded.value
+                   ''', (str(uid),))
+    conn.commit()
+    conn.close()
+    
 
 ## Insert an email into the table
 def insert_email(messageID, subject, sender, date, body):
@@ -58,26 +90,26 @@ def get_data_from_table():
     all_emails = []
 
     for email_id, sender, subject, body, category, priority in rows:
+        if category == None or priority == None:
+            # Normalize everything consistently
+            sender_clean = (sender or "").strip().lower()
+            subject_clean = (subject or "").strip().lower()
 
-        # Normalize everything consistently
-        sender_clean = (sender or "").strip().lower()
-        subject_clean = (subject or "").strip().lower()
+            # Better body cleanup
+            body_clean = (body or "")
+            body_clean = body_clean.replace("\n", " ")
+            body_clean = re.sub(r"\s+", " ", body_clean).strip().lower()
 
-        # Better body cleanup
-        body_clean = (body or "")
-        body_clean = body_clean.replace("\n", " ")
-        body_clean = re.sub(r"\s+", " ", body_clean).strip().lower()
+            email_info = {
+                "id": email_id,
+                "sender": sender_clean,
+                "subject": subject_clean,
+                "body": body_clean,
+                "current_category": category,
+                "current_priority": priority
+            }
 
-        email_info = {
-            "id": email_id,
-            "sender": sender_clean,
-            "subject": subject_clean,
-            "body": body_clean,
-            "current_category": category,
-            "current_priority": priority
-        }
-
-        all_emails.append(email_info)
+            all_emails.append(email_info)
 
     return all_emails
 
@@ -137,3 +169,32 @@ def update_email_status(id, email_status):
     cursor.execute("UPDATE emails SET status=? WHERE id=?", (email_status, id))
     conn.commit()
     conn.close()
+
+def fetch_emails_batch(offset, limit, category = None, priority = None):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = """
+        SELECT id, sender, subject, category, priority, status, date
+        FROM emails
+        WHERE 1=1
+    """
+
+    params = []
+
+    if category:
+        query += " AND category = ?"
+        params.append(category)
+
+    if priority:
+        query += " AND priority = ?"
+        params.append(priority)
+
+    query += " ORDER BY id DESC LIMIT ? OFFSET ?"
+
+    params.extend([limit, offset])
+
+    emails_batch = cursor.execute(query, params).fetchall()
+    
+    conn.close()
+    return emails_batch

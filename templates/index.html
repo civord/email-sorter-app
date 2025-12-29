@@ -57,31 +57,41 @@
             <div class="inbox-div">
                 <h2 id="inbox-text">Inbox</h2>
                 <div class="inbox-icons">
-                    <i class="fa-solid fa-filter"></i>
-                </div>
-            </div>
-            <div class="email-list">
-                {% for email in emails %}
-                    <div class="email-item" data-email-id={{email[0]}} data-email-status={{email[5]}}>
-                        <div class="profile-pic">
-                            <img id="profile-pic" src="/imgs/unknown.png" alt="">
-                        </div>
-                        <div class="email-content">
-                            <div class="sender-div">
-                                <h3>{{email[1]}}</h3>
-                            </div>
-                            <div class="subject-div">
-                                <h4>{{email[2]}}</h4>
-                                <p>5:39 PM</p>
-                            </div>
-                            <div class="body-div">
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                <div class="priority-tag">{{email[4]}}</div>
-                            </div>
+                    <i id="filter-btn" class="fa-solid fa-filter"></i>
+                    <div id="filter-modal" class="hidden">
+                        <div class="filter-box">
+                            <h3>Filter emails</h3>
+
+                            <label>
+                                Category:
+                                <select id="filter-category">
+                                    <option value="">All</option>
+                                    <option value="work">Work</option>
+                                    <option value="marketing">Marketing</option>
+                                    <option value="school">School</option>
+                                    <option value="spam">Spam</option>
+                                    <option value="finance">Finance</option>
+                                    <option value="support">Support</option>
+                                </select>
+                            </label>
+
+                            <label>
+                                Priority:
+                                <select id="filter-priority">
+                                    <option value="">All</option>
+                                    <option value="high">High</option>
+                                    <option value="normal">Normal</option>
+                                    <option value="low">Low</option>
+                                </select>
+                            </label>
+
+                            <button id="apply-filters">Apply</button>
                         </div>
                     </div>
-                {% endfor %}
+                </div>
             </div>
+            <div class="email-list"></div>
+            <div id="scroll-sentinel"></div>
         </section>
         <section class="full-email-section">
             <div class="top-subject-div">

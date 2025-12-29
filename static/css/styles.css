@@ -118,6 +118,24 @@ body{
 
 .inbox-div > .inbox-icons i{
     color: var(--accent-color);
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
+
+#filter-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+}
+
+.filter-box {
+    background: #fff;
+    width: 300px;
+    margin: 100px auto;
+    padding: 16px;
 }
 
 .inbox-div #inbox-text{
@@ -155,6 +173,19 @@ body{
     vertical-align: middle;
 }
 
+.email-list > .email-item .sender-div{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    vertical-align: middle;
+}
+
+.email-list > .email-item .sender-div p{
+    margin-left: auto;
+    font-weight: 700 !important;
+    text-transform: capitalize;
+}
+
 .email-list > .email-item h3{
     font-weight: 500;
     font-size: 16px;
@@ -178,6 +209,7 @@ body{
     font-weight: 500;
     font-size: 12px;
     color: var(--high-priority);
+    text-transform: capitalize;
 }
 
 .email-list > .email-item .body-div p{

@@ -1,12 +1,24 @@
 from flask import Flask, render_template, jsonify, request
 import database
+from datetime import datetime
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    emails = database.get_raw_email_table()
-    return render_template("index.html", emails=emails)
+    return render_template("index.html")
+
+@app.route("/emails")
+def render_emails():
+    offset = int(request.args.get("offset", 0))
+    limit = int(request.args.get("limit", 20))
+    category = request.args.get("category")
+    priority = request.args.get("priority")
+    emails = database.fetch_emails_batch(offset, limit, category, priority)
+    if not emails:
+        return jsonify([])
+
+    return jsonify(emails)
 
 @app.route("/email/<int:email_id>")
 def get_email(email_id):
@@ -14,11 +26,13 @@ def get_email(email_id):
     if not email:
         return jsonify({"error": "Not Found"}), 404
     
+    date = datetime.strptime(email["date"], "%a, %d %b %Y %H:%M:%S %z").strftime("%d/%m/%Y, %H:%M")
+
     return jsonify({
         "sender": email["sender"],
         "subject": email["subject"],
         "body": email["body"],
-        "date": email["date"]
+        "date": date
     })
 
 @app.route("/api/submit-data", methods=['POST'])
