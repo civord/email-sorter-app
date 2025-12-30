@@ -12,12 +12,14 @@
     --selected-border-color: #4f43be;
     --high-priority: #C41E3A;
     --selected-color: #dcdaee;
+    --top-nav-height: 60px;
 }
 
 body{
     font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: #d7d5e8;
     background: linear-gradient(90deg, rgba(215, 213, 232, 1) 0%, rgba(176, 181, 212, 1) 52%, rgba(175, 154, 181, 1) 100%);
+    overflow: hidden;
 }
 
 .main-content{
@@ -29,21 +31,59 @@ body{
     gap: 1rem;
     transition: all .3s ease;
     width: calc(100% - 80px);
-    margin-top: .8rem;
+    margin-top: 1rem;
     align-items: start;
 }
 
+.top-navigation{
+    background: rgba(215, 213, 232, 1);
+    height: var(--top-nav-height);
+    width: 100%;
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+}
+
+.top-navigation ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    justify-content: space-between;
+}
+
+.top-navigation ul div{
+    display: flex;
+    gap: 2rem;
+}
+
+.top-navigation ul li a{
+    text-decoration: none;
+    color: #4e525a;
+    padding-left: 2rem;
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+
+.top-navigation ul li h1{
+    font-size: 20px;
+    color:#4e525a
+}
+
+
 .sidebar{
     position: fixed;
-    top: 0;
+    top: var(--top-nav-height);
     left: 0;
     height: 100vh;
     width: 80px;
     padding: 0.4rem 0.8rem;
     transition: all .3s ease;
     border-right: 1px solid #6b72805b;
-    background: #d7d5e8;
-    background: linear-gradient(100deg, rgba(215, 213, 232, 1) 0%, rgba(176, 181, 212, 1) 52%, rgba(175, 154, 181, 1) 100%);
+    background: rgba(215, 213, 232, 1);
 }
 
 .sidebar.active ~ .main-content{
@@ -105,15 +145,20 @@ body{
     gap: 0rem;
     background-color: #fff;
     padding: 0.8rem 0rem 0.8rem 0rem;
-    border-radius: 12px;
-    height: auto;
+    border-radius: 0 12px 12px 12px;
+    height: calc(100vh - var(--top-nav-height) - 2rem);
+    overflow-y: scroll;
 }
 
 .inbox-div{
     width: 100%;
-    padding: 0rem 0.8rem 0.8rem 2.3rem;
+    padding: 0.8rem 0.8rem 0.8rem 2.3rem;
     display: flex;
     justify-content: space-between;
+    height: auto;
+    background-color: #fff;
+    border-radius: 12px 12px 0 0;
+    border-bottom: 1px solid #6b728059;
 }
 
 .inbox-div > .inbox-icons i{
@@ -132,10 +177,33 @@ body{
 }
 
 .filter-box {
-    background: #fff;
+    background: linear-gradient(90deg, rgba(215, 213, 232, 1) 0%, rgba(176, 181, 212, 1) 52%, rgba(175, 154, 181, 1) 100%);
     width: 300px;
     margin: 100px auto;
     padding: 16px;
+    color: #4e525a;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    border-radius: 15px;
+}
+
+.filter-box select{
+    border: none;
+    border-bottom: 1px solid #6b728059;
+    outline: none;
+    background: transparent;
+    color: #4e525a;
+}
+
+.filter-box button{
+    width: 64px;
+    padding: 5px;
+    background-color: var(--accent-color);
+    border: none;
+    outline: none;
+    color: #fff;
+    border-radius: 15px;
 }
 
 .inbox-div #inbox-text{
@@ -151,7 +219,11 @@ body{
     border-left: 4px solid var(--border-color);
     border-bottom: 1px solid #6b728059;
     padding: .8rem 0.8rem .8rem .8rem;
-    height: 100%;
+    height: auto;
+}
+
+.email-list > .email-item:last-of-type{
+    margin-bottom: 2rem;
 }
 
 .email-list > .email-item > .email-content{
@@ -166,6 +238,14 @@ body{
 }
 
 #profile-pic{
+    width: 30px;
+    height: auto;
+    border: 1px solid black;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+#full-profile-pic{
     width: 30px;
     height: auto;
     border: 1px solid black;
@@ -197,6 +277,7 @@ body{
     font-weight: 600;
     font-size: 12px;
     color: var(--accent-color);
+    text-wrap: nowrap;
 }
 
 .email-list > .email-item .body-div{
@@ -246,9 +327,10 @@ body{
     display: flex;
     gap: .8rem;
     flex-direction: column;
-    height: auto;
+    height: calc(100vh - var(--top-nav-height) - 2rem);
     max-width: 1100px;
     visibility: hidden;
+    overflow: hidden;
 }
 
 .full-email-section > .top-subject-div{
@@ -271,6 +353,8 @@ body{
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    flex: 1 1 auto;
+    overflow: hidden;
 }
 
 .full-email-section > .full-email-content h4{
@@ -300,6 +384,11 @@ body{
     justify-content: space-between;
 }
 
+.full-email-content > .body-sec{
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
 .full-email-content > .body-sec pre{
     font-size: 14px;
     color: #111;
@@ -310,5 +399,82 @@ body{
     text-align: left;
     word-break: break-word;
     overflow-wrap: anywhere;
+    max-height: 100%;
 }
 
+.back-btn{
+    display: none;
+}
+
+@media (max-width: 767px){
+    .sidebar{
+        display: none;
+    }
+
+    .top-navigation #btn-container{
+        display: none;
+        width: 100%;
+    }
+
+    .top-navigation > ul{
+        display: flex;
+        justify-content: space-around;
+        width: inherit;
+        gap: 5rem;
+    }
+
+    .top-navigation > ul > li > .back-btn{
+        color: #4e525a;
+        display: none;
+        margin-left: auto;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 1.2rem;
+        vertical-align: middle;
+        
+    }
+
+    .top-navigation > ul > li > .back-btn.active{
+        display: inline;
+    }
+    .main-content{
+        
+        left: 0;
+        margin: 0;
+    }
+    .middle-pane-section{
+        padding: 0;
+        margin: 0;
+        width: 100vw;
+        border-radius: 0;
+    }
+    .inbox-div{
+        border-radius: 0;
+    }
+    .full-email-section{
+        display: none;
+    }
+    .full-email-section.active{
+        display: flex;
+        flex-direction: column;
+        width: 100vw;
+        height: calc(100vh - var(--top-nav-height));
+    }
+
+    .full-email-section > .top-subject-div{
+        border-radius: 0;
+        border-bottom: 1px solid #6b728059;
+    }
+
+    .full-email-section > .full-email-content{
+        border-radius: 0;
+        /* allow the content area to scroll on mobile */
+        flex: 1 1 auto;
+        overflow-y: auto;
+    }
+
+    .mid-container.hidden{
+        display: none;
+    }
+}

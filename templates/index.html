@@ -5,46 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/styles.css">
     <script src="https://kit.fontawesome.com/7555c6f885.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script defer src="/static/js/script.js"></script>
     <title>Email Sorting App</title>
 </head>
 <body>
+    <nav class="top-navigation">
+        <ul>
+            <div>
+                <li>
+                    <a id="btn-container" href="#">
+                        <i class="fa-solid fa-bars" id="btn"></i>
+                    </a>
+                </li>
+                <li>
+                    <h1>Smart Email Manager</h1>
+                </li>
+            </div>
+            <li>
+                <button class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
+            </li>
+        </ul>
+    </nav>
     <aside class="sidebar">
         <div class="top">
             
         </div>
         <ul>
             <li>
-                <a href="#">
-                    <i class="fa-solid fa-bars" id="btn"></i>
-                </a>
-            </li>
-            <li>
-                <a href="#">
+                <a class="sidebar-link" href="#">
                     <i class="fa-solid fa-inbox"></i>
                     <span class="nav-item">Inbox</span>
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa-regular fa-star"></i>
-                    <span class="nav-item">Starred</span>
+                <a class="sidebar-link" href="#">
+                    <i class="fa-solid fa-person-digging"></i>
+                    <span class="nav-item">Work</span>
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa-regular fa-paper-plane"></i>
-                    <span class="nav-item">Sent</span>
+                <a class="sidebar-link" href="#">
+                    <i class="fa-solid fa-school"></i>
+                    <span class="nav-item">School</span>
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa-regular fa-file"></i>
-                    <span class="nav-item">Drafts</span>
+                <a class="sidebar-link" href="#">
+                    <i class="fa-solid fa-money-bill-1"></i>
+                    <span class="nav-item">Finance</span>
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a class="sidebar-link" href="#">
                     <i class="fa-solid fa-ban"></i>
                     <span class="nav-item">Spam</span>
                 </a>
@@ -53,7 +66,7 @@
         </ul>
     </aside>
     <main class="main-content">
-        <section class="middle-pane-section">
+        <div class="mid-container">
             <div class="inbox-div">
                 <h2 id="inbox-text">Inbox</h2>
                 <div class="inbox-icons">
@@ -61,7 +74,7 @@
                     <div id="filter-modal" class="hidden">
                         <div class="filter-box">
                             <h3>Filter emails</h3>
-
+    
                             <label>
                                 Category:
                                 <select id="filter-category">
@@ -74,7 +87,7 @@
                                     <option value="support">Support</option>
                                 </select>
                             </label>
-
+    
                             <label>
                                 Priority:
                                 <select id="filter-priority">
@@ -84,15 +97,17 @@
                                     <option value="low">Low</option>
                                 </select>
                             </label>
-
+    
                             <button id="apply-filters">Apply</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="email-list"></div>
-            <div id="scroll-sentinel"></div>
-        </section>
+            <section class="middle-pane-section">
+                <div class="email-list"></div>
+                <div id="scroll-sentinel"></div>
+            </section>
+        </div>
         <section class="full-email-section">
             <div class="top-subject-div">
                 <h3 id="preview-subject">Congrats! Your patience has paid off!</h3>
@@ -100,7 +115,7 @@
             <div class="full-email-content">
                 <div class="sender-sec">
                     <div class="profile-pic">
-                        <img id="profile-pic" src="/imgs/unknown.png" alt="">
+                        <img id="full-profile-pic" src="/imgs/unknown.png" alt="">
                     </div>
                     <div class="sender-content">
                         <div class="sender-domain">

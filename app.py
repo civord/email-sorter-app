@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request
 import database
+import hashlib
 from datetime import datetime
 
 app = Flask(__name__)
@@ -27,9 +28,12 @@ def get_email(email_id):
         return jsonify({"error": "Not Found"}), 404
     
     date = datetime.strptime(email["date"], "%a, %d %b %Y %H:%M:%S %z").strftime("%d/%m/%Y, %H:%M")
-
+    chars_to_remove = "<>"
+    sender_email = email["sender"].split(" ")[-1].replace('<', '').replace('>', '').lower().encode('utf-8')
+    sender_hash = hashlib.sha256(sender_email).hexdigest()
     return jsonify({
         "sender": email["sender"],
+        "sender_hash" : sender_hash,
         "subject": email["subject"],
         "body": email["body"],
         "date": date
